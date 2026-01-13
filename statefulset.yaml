@@ -26,10 +26,7 @@ spec:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
               value: "admin"
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-secret
-                  key: ADMIN_PASS
+              value: "admin" #changed in web ui
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
             - name: KC_HTTP_ENABLED
