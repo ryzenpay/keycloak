@@ -57,10 +57,7 @@ spec:
                   name: keycloak-postgresql-app
                   key: host 
             - name: 'KC_DB'
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-postgresql-app
-                  key: dbname 
+              value: postgres
             - name: 'KC_DB_PASSWORD'
               valueFrom:
                 secretKeyRef:
