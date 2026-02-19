@@ -1,10 +1,8 @@
 apiVersion: apps/v1
-# Use a stateful setup to ensure that for a rolling update Pods are restarted with a rolling strategy one-by-one.
-# This prevents losing in-memory information stored redundantly in two Pods.
 kind: StatefulSet
 metadata:
   name: keycloak
-  namespace: keycloak
+  namespace: {{ .Release.Namespace }}
   labels:
     app: keycloak
 spec:
@@ -20,23 +18,29 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: quay.io/keycloak/keycloak:26.5.0
+          image: {{ print .Values.image.image ":" .Values.image.tag }}
           args: ["start"]
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: "admin"
+              valuesFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.secret.name }}
+                  key: {{ .Values.config.secret.usernameKey }}
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: "admin" #changed in web ui
+              valuesFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.secret.name }}
+                  key: {{ .Values.config.secret.passwordKey }}
             - name: KC_PROXY_HEADERS
-              value: "xforwarded"
+              value: {{ .Values.config.proxyHeaders }}
             - name: KC_HTTP_ENABLED
-              value: "true"
+              value: {{ .Values.config.httpEnabled | quote }}
             - name: KC_HOSTNAME
-              value: https://auth.ryzen.me
+              value: {{ .Values.config.hostname }}
             - name: KC_HEALTH_ENABLED
-              value: "true"
+              value: {{ .Values.config.healthcheck | quote }}
             - name: 'KC_CACHE'
-              value: 'ispn'
+              value: {{ .Values.config.cache }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
@@ -46,25 +50,25 @@ spec:
             - name: 'KC_DB_URL_DATABASE'
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-postgresql-app
-                  key: dbname 
+                  name: {{ .Values.database.secret.name }}
+                  key: {{ .Values.database.secret.databaseKey }} 
             - name: 'KC_DB_URL_HOST'
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-postgresql-app
-                  key: host 
+                  name: {{ .Values.database.secret.name }}
+                  key: {{ .Values.database.secret.hostKey }} 
             - name: 'KC_DB'
-              value: postgres
+              value: {{ .Values.database.type }}
             - name: 'KC_DB_PASSWORD'
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-postgresql-app
-                  key: password
+                  name: {{ .Values.database.secret.name }}
+                  key: {{ .Values.database.secret.passwordKey }}
             - name: 'KC_DB_USERNAME'
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-postgresql-app
-                  key: username 
+                  name: {{ .Values.database.secret.name }}
+                  key: {{ .Values.database.secret.usernameKey }} 
           ports:
             - name: http
               containerPort: 8080
@@ -89,11 +93,7 @@ spec:
               path: /health/live
               port: 9000
             periodSeconds: 10
-            failureThreshold: 3              
-          resources:
-            limits:
-              cpu: 2000m
-              memory: 2000Mi
-            requests:
-              cpu: 500m
-              memory: 1700Mi
+            failureThreshold: 3
+{{ if .Values.resources }}
+{{ .Values.resources | indent 10 }}
+{{ end }}

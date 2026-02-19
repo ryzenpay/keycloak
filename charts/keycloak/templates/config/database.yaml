@@ -1,0 +1,14 @@
+{{ if not .Values.database.secret.existing }}
+{{- $secretObj := (lookup "v1" "Secret" .Release.Namespace .Values.database.secret.name) | default dict -}}
+{{- $secretData := (get $secretObj "data") | default dict -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.database.secret.name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  {{ .Values.database.secret.usernameKey }}: {{ get $secretData .Values.database.secret.usernameKey | default (.Values.database.secret.username | b64enc) | default (randAlphaNum 100 | sha256sum | b64enc) }}
+  {{ .Values.database.secret.passwordKey }}: {{ get $secretData .Values.database.secret.passwordKey | default (.Values.database.secret.password | b64enc) | default (randAlphaNum 100 | sha256sum | b64enc) }}
+  {{ .Values.database.secret.databaseKey }}: {{ get $secretData .Values.database.secret.databaseKey | default (.Values.database.secret.database | b64enc) }}
+  {{ .Values.database.secret.hostKey }}: {{ get $secretData .Values.database.secret.hostKey | default (.Values.database.secret.host | b64enc) }}
+{{ end }}

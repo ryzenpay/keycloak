@@ -1,0 +1,57 @@
+discovery:
+  clusterIP: ""
+  type: clusterIP
+
+image:
+  image: quay.io/keycloak/keycloak
+  tag: latest
+
+config: 
+  proxyHeaders: xforwarded
+  httpEnabled: true
+  hostname: https://auth.example.com
+  healthcheck: true
+  cache: ispn
+  secret:
+    existing: false
+    name: keycloak-secret
+    username: admin
+    usernameKey: ADMIN_USERNAME
+    password: ""
+    passwordKey: ADMIN_PASSWORD
+
+ingress:
+  enabled: false
+  className: traefik
+  annotations: {}
+  path: /
+  pathType: Prefix
+  tls:
+    secretName: ""
+
+database:
+  type: postgres
+  existing: false
+  instances: 1
+  secret:
+    existing: false
+    name: keycloak-database-secret
+    username: keycloak
+    usernameKey: username
+    password: ""
+    passwordKey: password
+    database: keycloak
+    databaseKey: database
+    host: ""
+    hostKey: host
+  persistence:
+    size: 5Gi
+    storageClass: ""
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2000Mi
+  requests:
+    cpu: 500m
+    memory: 1700Mi

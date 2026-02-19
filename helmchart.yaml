@@ -1,0 +1,11 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: keycloak
+spec:
+  chart: oci://harbor.ryzen.me/library/keycloak
+  version: 0.2.0
+  targetNamespace: keycloak
+  createNamespace: true
+  valuesContent: |-
+    # VALUES HERE
