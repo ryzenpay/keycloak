@@ -13,5 +13,4 @@ spec:
     initdb:
       database: {{ .Values.database.secret.database }}
       owner: {{ .Values.database.secret.username }}
-
 {{ end }}
