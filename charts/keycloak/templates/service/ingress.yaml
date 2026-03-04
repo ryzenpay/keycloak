@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: {{ .Values.config.hostname | replace "https://" "" | replace "http://" "" | | replace "\"" "" }}
+    - host: {{ .Values.config.hostname | replace "https://" "" | replace "http://" "" | replace "\"" "" }}
       http:
         paths:
           - path: {{ .Values.ingress.path }}
@@ -23,6 +23,6 @@ spec:
   {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - {{ .Values.config.hostname }}
+        - {{ .Values.config.hostname | replace "https://" "" | replace "http://" "" | replace "\"" "" }}
       secretName: {{ .Values.ingress.tls.secretName }}
   {{- end }}

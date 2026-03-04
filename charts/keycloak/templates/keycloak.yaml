@@ -22,12 +22,12 @@ spec:
           args: ["start"]
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              valuesFrom:
+              valueFrom:
                 secretKeyRef:
                   name: {{ .Values.config.secret.name }}
                   key: {{ .Values.config.secret.usernameKey }}
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              valuesFrom:
+              valueFrom:
                 secretKeyRef:
                   name: {{ .Values.config.secret.name }}
                   key: {{ .Values.config.secret.passwordKey }}
