@@ -31,7 +31,7 @@ database:
   instances: 1
   secret:
     existing: false
-    name: keycloak-database-secret
+    name: keycloak-postgresql-app
     username: keycloak
     usernameKey: username
     password: ""
