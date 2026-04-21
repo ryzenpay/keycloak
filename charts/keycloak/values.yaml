@@ -37,7 +37,7 @@ database:
     password: ""
     passwordKey: password
     database: keycloak
-    databaseKey: database
+    databaseKey: dbname
     host: ""
     hostKey: host
   persistence:
