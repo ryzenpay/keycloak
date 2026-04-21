@@ -1,7 +1,7 @@
 {{- if not .Values.database.secret.existing -}}
 {{- $secretObj := (lookup "v1" "Secret" .Release.Namespace .Values.database.secret.name) | default dict -}}
 {{- $secretData := (get $secretObj "data") | default dict -}}
-{{- if or $secretData .Values.database.secret.username .Values.database.secret.password .Values.database.secret.database .Values.database.secret.host -}}
+{{- if or .Values.database.existing $secretData -}}
 apiVersion: v1
 kind: Secret
 metadata:
